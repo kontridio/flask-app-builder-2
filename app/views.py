@@ -1,40 +1,24 @@
 from flask import render_template
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder import ModelView, ModelRestApi
-
+from flask_appbuilder.charts.views import DirectByChartView
+from flask_appbuilder.models.sqla.interface import SQLAInterface
+from .models import Tabulka
 from . import appbuilder, db
 
-"""
-    Create your Model based REST API::
 
-    class MyModelApi(ModelRestApi):
-        datamodel = SQLAInterface(MyModel)
+class CountryDirectChartView(DirectByChartView):
+    datamodel = SQLAInterface(Tabulka)
+    chart_title = 'Direct Data Example'
 
-    appbuilder.add_api(MyModelApi)
-
-
-    Create your Views::
-
-
-    class MyModelView(ModelView):
-        datamodel = SQLAInterface(MyModel)
-
-
-    Next, register your Views::
-
-
-    appbuilder.add_view(
-        MyModelView,
-        "My View",
-        icon="fa-folder-open-o",
-        category="My Category",
-        category_icon='fa-envelope'
-    )
-"""
-
-"""
-    Application wide 404 error handler
-"""
+    definitions = [
+        {
+            'label': 'cislo',
+            'group': 'id',
+            'series': ['cislo',
+                       'id']
+        }
+    ]
 
 
 @appbuilder.app.errorhandler(404)
@@ -48,3 +32,4 @@ def page_not_found(e):
 
 
 db.create_all()
+appbuilder.add_view(CountryDirectChartView, "Graf", category="Statistics")
